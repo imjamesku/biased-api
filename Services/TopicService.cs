@@ -29,7 +29,7 @@ namespace WebApi.Services
 
         public IEnumerable<Topic> GetAll()
         {
-            var topics = _context.Topics.Include(t => t.Options);
+            var topics = _context.Topics.Include(t => t.Options).ThenInclude(o => o.Votes);
             return topics;
         }
 

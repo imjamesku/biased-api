@@ -44,8 +44,8 @@ namespace WebApi.Services
             if (vote != null) {
                 // already voted
                 // Do unvote
-                _context.Votes.Remove(vote);
-                _context.SaveChanges();
+                // _context.Votes.Remove(vote);
+                // _context.SaveChanges();
                 return null;
             } else {
                 // Not yet voted

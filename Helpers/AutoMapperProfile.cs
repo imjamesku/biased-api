@@ -14,8 +14,18 @@ namespace WebApi.Helpers
             CreateMap<UpdateModel, User>();
             CreateMap<Topic, TopicResourceModel>()
                 .ForMember(tr => tr.UserName, b => b.MapFrom(t => t.User.Username))
-                .ForMember(tr => tr.Left, b => b.MapFrom(t => t.Options[0].Name))
-                .ForMember(tr => tr.Right, b => b.MapFrom(t => t.Options[1].Name));
+                .ForMember(tr => tr.Left, opts => opts.MapFrom(src => new OptionResourceModel
+                {
+                    Id = src.Options[0].Id,
+                    Name = src.Options[0].Name,
+                    count = src.Options[0].Votes.Count
+                }))
+                .ForMember(tr => tr.Right, opts => opts.MapFrom(src => new OptionResourceModel
+                {
+                    Id = src.Options[1].Id,
+                    Name = src.Options[1].Name,
+                    count = src.Options[1].Votes.Count
+                }));
         }
     }
 }

@@ -45,7 +45,7 @@ namespace WebApi.Controllers
                 if (topic != null) {
                     return Ok(new {message = "Voted"});
                 } else {
-                    return Ok(new {message = "Unvoted"});
+                    return Ok(new {message = "Sorry, you've already voted"});
                 }
             }
             catch (AppException ex)
