@@ -19,6 +19,18 @@ namespace WebApi.Helpers
             options.UseSqlServer(Configuration.GetConnectionString("WebApiDatabase"));
         }
 
+        protected override void OnModelCreating(ModelBuilder builder) {
+            base.OnModelCreating(builder);
+
+            // Configure Option(must configure composite key)
+            builder.Entity<Vote>().HasKey(vote => new {vote.OptionId, vote.UserId});
+        }
+
         public DbSet<User> Users { get; set; }
+        public DbSet<Topic> Topics {get; set;}
+        public DbSet<Option> Options {get; set;}
+        public DbSet<Vote> Votes {get; set;}
+        public DbSet<Comment> Comments {get; set;}
+        public DbSet<Subcomment> Subcomments {get; set;}
     }
 }
