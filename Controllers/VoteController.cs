@@ -13,43 +13,40 @@ using WebApi.Services;
 using WebApi.Entities;
 using WebApi.Models.Topic;
 using Microsoft.AspNetCore.Identity;
+using WebApi.Models.Vote;
 
 namespace WebApi.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class TopicsController : ControllerBase
+    public class Vote : ControllerBase
     {
-        private ITopicService _topicService;
-
-        // private readonly UserManager<IdentityUser> _userManager;
+        private IVoteService _voteService;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
-        public TopicsController(
-            ITopicService topicService,
-            // UserManager<IdentityUser> userManager,
+        public Vote(
+            IVoteService voteService,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
-            _topicService = topicService;
-            // _userManager = userManager;
+            _voteService = voteService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody]CreateTopicModel model)
+        public IActionResult Create([FromBody]CreateVoteModel model)
         {
             try
             {
-                var topic = _topicService.Create(model, int.Parse(User.Identity.Name));
-                return Ok(new {
-                    Question = topic.Question,
-                    Left = topic.Options[0].Name,
-                    Right = topic.Options[1].Name
-                });
+                var topic = _voteService.Create(model.OptionId, int.Parse(User.Identity.Name));
+                if (topic != null) {
+                    return Ok(new {message = "Voted"});
+                } else {
+                    return Ok(new {message = "Unvoted"});
+                }
             }
             catch (AppException ex)
             {
@@ -57,18 +54,18 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var topics = _topicService.GetAll();
-            var topicResourceList = _mapper.Map<IList<TopicResourceModel>>(topics);
-            return Ok(topicResourceList);
-        }
+        // [HttpGet]
+        // public IActionResult GetAll()
+        // {
+        //     var topics = _topicService.GetAll();
+        //     var topicResourceList = _mapper.Map<IList<TopicResourceModel>>(topics);
+        //     return Ok(topicResourceList);
+        // }
 
         // [HttpGet("{id}")]
         // public IActionResult GetById(int id)
         // {
-        //     var user = _topicService.GetById(id);
+        //     var user = _voteService.GetById(id);
         //     var model = _mapper.Map<UserModel>(user);
         //     return Ok(model);
         // }
