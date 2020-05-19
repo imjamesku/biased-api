@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApi.Migrations.SqliteMigrations
 {
@@ -12,11 +13,18 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(nullable: true),
                     Question = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Topics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Topics_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -25,9 +33,12 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    TopicId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false),
+                    TopicId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    EditedAt = table.Column<DateTime>(nullable: false),
+                    DeletedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,13 +48,13 @@ namespace WebApi.Migrations.SqliteMigrations
                         column: x => x.TopicId,
                         principalTable: "Topics",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +63,9 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    TopicId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false),
-                    TopicId = table.Column<int>(nullable: true)
+                    Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,7 +75,7 @@ namespace WebApi.Migrations.SqliteMigrations
                         column: x => x.TopicId,
                         principalTable: "Topics",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,9 +84,12 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    CommentId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false),
+                    CommentId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    EditedAt = table.Column<DateTime>(nullable: false),
+                    DeletedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,13 +99,13 @@ namespace WebApi.Migrations.SqliteMigrations
                         column: x => x.CommentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Subcomments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,6 +155,11 @@ namespace WebApi.Migrations.SqliteMigrations
             migrationBuilder.CreateIndex(
                 name: "IX_Subcomments_UserId",
                 table: "Subcomments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topics_UserId",
+                table: "Topics",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(

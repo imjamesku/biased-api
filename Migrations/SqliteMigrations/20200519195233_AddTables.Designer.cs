@@ -9,7 +9,7 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20200519033418_AddTables")]
+    [Migration("20200519195233_AddTables")]
     partial class AddTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,12 +25,23 @@ namespace WebApi.Migrations.SqliteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TopicId")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EditedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TopicId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -51,7 +62,7 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TopicId")
+                    b.Property<int>("TopicId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
@@ -70,13 +81,24 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CommentId")
+                    b.Property<int>("CommentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EditedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -97,7 +119,12 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<string>("Question")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Topics");
                 });
@@ -147,26 +174,43 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     b.HasOne("WebApi.Entities.Topic", null)
                         .WithMany("Comments")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WebApi.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebApi.Entities.Option", b =>
                 {
                     b.HasOne("WebApi.Entities.Topic", null)
                         .WithMany("Options")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebApi.Entities.Subcomment", b =>
                 {
                     b.HasOne("WebApi.Entities.Comment", null)
                         .WithMany("Subcomments")
-                        .HasForeignKey("CommentId");
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
+                    b.HasOne("WebApi.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebApi.Entities.Topic", b =>
+                {
                     b.HasOne("WebApi.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
