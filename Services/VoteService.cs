@@ -10,8 +10,6 @@ namespace WebApi.Services
 {
     public interface IVoteService
     {
-        IEnumerable<Topic> GetAll();
-        Topic GetById(int id);
         Vote Create(int optionId, int userId);
         // void Update(Topic topic);
         // void Delete(Topic topic);
@@ -26,17 +24,6 @@ namespace WebApi.Services
             _context = context;
         }
 
-
-        public IEnumerable<Topic> GetAll()
-        {
-            var topics = _context.Topics.Include(t => t.Options);
-            return topics;
-        }
-
-        public Topic GetById(int id)
-        {
-            return _context.Topics.Find(id);
-        }
         //Vote or unvote
         public Vote Create(int optionId, int userId)
         {
@@ -60,16 +47,6 @@ namespace WebApi.Services
                 _context.Votes.Add(newVote);
                 _context.SaveChanges();
                 return newVote;
-            }
-        }
-        // TODO: delete all relevant data
-        public void Delete(int id)
-        {
-            var topic = _context.Topics.Find(id);
-            if (topic != null)
-            {
-                _context.Topics.Remove(topic);
-                _context.SaveChanges();
             }
         }
 

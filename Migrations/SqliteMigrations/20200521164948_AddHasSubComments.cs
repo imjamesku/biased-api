@@ -3,10 +3,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApi.Migrations.SqliteMigrations
 {
-    public partial class AddTables : Migration
+    public partial class AddHasSubComments : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Topics",
                 columns: table => new
@@ -36,6 +53,7 @@ namespace WebApi.Migrations.SqliteMigrations
                     UserId = table.Column<int>(nullable: false),
                     TopicId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: false),
+                    SubcommentCount = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     EditedAt = table.Column<DateTime>(nullable: false),
                     DeletedAt = table.Column<DateTime>(nullable: false)
@@ -184,6 +202,9 @@ namespace WebApi.Migrations.SqliteMigrations
 
             migrationBuilder.DropTable(
                 name: "Topics");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

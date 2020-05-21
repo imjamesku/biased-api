@@ -1,5 +1,6 @@
 using AutoMapper;
 using WebApi.Entities;
+using WebApi.Models.Comment;
 using WebApi.Models.Topic;
 using WebApi.Models.Users;
 
@@ -26,6 +27,13 @@ namespace WebApi.Helpers
                     Name = src.Options[1].Name,
                     count = src.Options[1].Votes.Count
                 }));
+            CreateMap<Comment, CommentResourceModel>();
+                // .ForMember(cm => cm.User, opts => opts.MapFrom(src => new UserModel {
+                //     Id = src.User.Id,
+                //     FirstName = src.User.FirstName,
+                //     LastName = src.User.LastName,
+                //     Username = src.User.Username
+                // }));
         }
     }
 }

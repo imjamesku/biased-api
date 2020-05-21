@@ -7,12 +7,15 @@ namespace WebApi.Entities{
     public class Comment {
         public int Id { get; set; }
         [Required]
+        public int UserId {get; set;}
         public User User {get; set;}
         // public Topic Topic {get; set;}
+        [Required]
         public int TopicId {get; set;}
         [Required]
         public string Content{get; set;}
 
+        public int SubcommentCount{get; set;} = 0;
         public IList<Subcomment> Subcomments{get; set;} = new List<Subcomment>();
 
         //Todo: add CreatedAt, EditedAt, DeletedAt

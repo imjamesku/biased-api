@@ -9,8 +9,8 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20200519195233_AddTables")]
-    partial class AddTables
+    [Migration("20200521164948_AddHasSubComments")]
+    partial class AddHasSubComments
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,9 @@ namespace WebApi.Migrations.SqliteMigrations
 
                     b.Property<DateTime>("EditedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("SubcommentCount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TopicId")
                         .HasColumnType("INTEGER");
