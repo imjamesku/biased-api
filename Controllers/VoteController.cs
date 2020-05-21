@@ -41,11 +41,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var topic = _voteService.Create(model.OptionId, int.Parse(User.Identity.Name));
-                if (topic != null) {
+                var vote = _voteService.Create(model.OptionId, int.Parse(User.Identity.Name));
+                // var topicResource = _mapper.Map<TopicResourceModel>(topic);
+                if (vote != null) {
                     return Ok(new {message = "Voted"});
                 } else {
-                    return Ok(new {message = "Sorry, you've already voted"});
+                    return BadRequest(new {message = "Sorry, you've already voted on this topic"});
                 }
             }
             catch (AppException ex)

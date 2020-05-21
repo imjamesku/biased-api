@@ -43,11 +43,13 @@ namespace WebApi.Services
             User user = _context.Users.Find(userId);
             Option left = new Option {
                 Name = topicData.Left,
-                Type = EOptionTypes.Left
+                Type = EOptionTypes.Left,
+                Votes = new List<Vote>()
             };
             Option right = new Option {
                 Name = topicData.Right,
-                Type = EOptionTypes.Right
+                Type = EOptionTypes.Right,
+                Votes = new List<Vote>()
             };
             _context.Options.Add(left);
             _context.Options.Add(right);

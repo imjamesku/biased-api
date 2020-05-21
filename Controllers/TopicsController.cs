@@ -45,11 +45,8 @@ namespace WebApi.Controllers
             try
             {
                 var topic = _topicService.Create(model, int.Parse(User.Identity.Name));
-                return Ok(new {
-                    Question = topic.Question,
-                    Left = topic.Options[0].Name,
-                    Right = topic.Options[1].Name
-                });
+                var topicResource = _mapper.Map<TopicResourceModel>(topic);
+                return Ok(topicResource);
             }
             catch (AppException ex)
             {
@@ -57,6 +54,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll()
         {

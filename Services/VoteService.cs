@@ -40,8 +40,11 @@ namespace WebApi.Services
         //Vote or unvote
         public Vote Create(int optionId, int userId)
         {
-            Vote vote = _context.Votes.Where(v => v.OptionId == optionId && v.UserId == userId).FirstOrDefault();
-            if (vote != null) {
+            Option option = _context.Options.Find(optionId);
+            var bothSides = _context.Options.Where( o => o.TopicId == option.TopicId).ToList();
+            var votesByUser = _context.Votes.Where( v => v.OptionId == bothSides[0].Id || v.OptionId == bothSides[1].Id).ToList();
+
+            if (votesByUser.Count != 0) {
                 // already voted
                 // Do unvote
                 // _context.Votes.Remove(vote);
