@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebApi.Entities{
     public class Comment {
         public int Id { get; set; }
-        [Required]
         public int UserId {get; set;}
         public User User {get; set;}
         // public Topic Topic {get; set;}
