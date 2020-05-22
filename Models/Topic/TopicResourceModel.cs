@@ -1,3 +1,5 @@
+using System;
+
 namespace WebApi.Models.Topic
 {
     public class TopicResourceModel
@@ -8,6 +10,9 @@ namespace WebApi.Models.Topic
         public OptionResourceModel Left { get; set; }
         public OptionResourceModel Right { get; set; }
         public int CommentCount{get; set;}
+
+        public DateTime CreatedAt {get; set;}
+        public DateTime EditedAt {get; set;}
         // Todo: Add voted
     }
 }

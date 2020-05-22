@@ -17,7 +17,7 @@ namespace WebApi.Services
         // void Delete(Topic topic);
     }
 
-    public class TopicService : ITopicService
+    public class TopicService: ITopicService
     {
         private DataContext _context;
 
@@ -29,7 +29,7 @@ namespace WebApi.Services
 
         public IEnumerable<Topic> GetAll()
         {
-            var topics = _context.Topics.Include(t => t.Options).ThenInclude(o => o.Votes);
+            var topics = _context.Topics.Include(t => t.Options).ThenInclude(o => o.Votes).OrderByDescending(t => t.CreatedAt);
             return topics;
         }
 

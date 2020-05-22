@@ -10,7 +10,7 @@ namespace WebApi.Services
 {
     public interface ICommentService
     {
-        IEnumerable<Comment> GetCommentsByTopicId(int topicId);
+        IList<Comment> GetCommentsByTopicId(int topicId);
         Comment Create(CreateCommentModel formData, int userId);
         Comment Edit(EditCommentModel formData, int userId);
         // Topic CreateSubcomment(CreateCommentModel formData);
@@ -28,9 +28,9 @@ namespace WebApi.Services
         }
 
 
-        public IEnumerable<Comment> GetCommentsByTopicId(int topicId)
+        public IList<Comment> GetCommentsByTopicId(int topicId)
         {
-            var comments = _context.Comments.Where(c => c.TopicId == topicId);
+            var comments = _context.Comments.Where(c => c.TopicId == topicId).OrderByDescending(c => c.CreatedAt).ToList();
             return comments;
         }
 

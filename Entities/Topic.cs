@@ -9,5 +9,8 @@ namespace WebApi.Entities{
         public String Question{get; set;}
         public int CommentCount {get; set;} = 0;
         public IList<Comment> Comments {get; set;} = new List<Comment>();
+        public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
+        public DateTime EditedAt {get; set;} = DateTime.UtcNow;
+        public DateTime DeletedAt {get; set;} = DateTime.UtcNow;
     }
 }
