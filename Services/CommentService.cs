@@ -5,6 +5,7 @@ using System.Linq;
 using WebApi.Entities;
 using WebApi.Helpers;
 using WebApi.Models.Comment;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Services
 {
@@ -30,7 +31,7 @@ namespace WebApi.Services
 
         public IList<Comment> GetCommentsByTopicId(int topicId)
         {
-            var comments = _context.Comments.Where(c => c.TopicId == topicId).OrderByDescending(c => c.CreatedAt).ToList();
+            var comments = _context.Comments.Include(c => c.User).Where(c => c.TopicId == topicId).OrderByDescending(c => c.CreatedAt).ToList();
             return comments;
         }
 
