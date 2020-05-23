@@ -66,9 +66,10 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetCommentsByTopicId(int userId) {
-            var comments = _commentService.GetCommentsByTopicId(userId);
+        [AllowAnonymous]
+        [HttpGet("{topicId}")]
+        public IActionResult GetCommentsByTopicId(int topicId) {
+            var comments = _commentService.GetCommentsByTopicId(topicId);
             var commentResourceList = _mapper.Map<IList<CommentResourceModel>>(comments);
             return Ok(commentResourceList);
         }
