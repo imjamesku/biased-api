@@ -12,5 +12,6 @@ namespace WebApi.Entities
         public byte[] PasswordSalt { get; set; }
 
         public IList<Vote> Votes {get; set;}
+        public IList<Topic> Topics{get; set;}
     }
 }

@@ -97,11 +97,12 @@ namespace WebApi.Controllers
             return Ok(model);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
-            var model = _mapper.Map<UserModel>(user);
+            var model = _mapper.Map<UserModelWithTopics>(user);
             return Ok(model);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Entities;
 using WebApi.Helpers;
 
@@ -51,7 +52,9 @@ namespace WebApi.Services
 
         public User GetById(int id)
         {
-            return _context.Users.Find(id);
+            return _context.Users
+                .Include(u => u.Topics)
+                .SingleOrDefault(u => u.Id == id);
         }
 
         public User Create(User user, string password)
