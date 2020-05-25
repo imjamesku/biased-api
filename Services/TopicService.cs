@@ -35,7 +35,10 @@ namespace WebApi.Services
 
         public Topic GetById(int id)
         {
-            return _context.Topics.Find(id);
+            return _context.Topics
+                .Include(t => t.Options).ThenInclude(o => o.Votes)
+                .Include(t => t.User)
+                .SingleOrDefault(t => t.Id == id);
         }
         //Todo: Create Data
         public Topic Create(CreateTopicModel topicData, int userId)

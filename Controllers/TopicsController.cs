@@ -1,18 +1,11 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using System.IdentityModel.Tokens.Jwt;
 using WebApi.Helpers;
 using Microsoft.Extensions.Options;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
-using WebApi.Entities;
 using WebApi.Models.Topic;
-using Microsoft.AspNetCore.Identity;
 
 namespace WebApi.Controllers
 {
@@ -63,13 +56,15 @@ namespace WebApi.Controllers
             return Ok(topicResourceList);
         }
 
-        // [HttpGet("{id}")]
-        // public IActionResult GetById(int id)
-        // {
-        //     var user = _topicService.GetById(id);
-        //     var model = _mapper.Map<UserModel>(user);
-        //     return Ok(model);
-        // }
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var topic = _topicService.GetById(id);
+            var topicResource = _mapper.Map<TopicResourceModel>(topic);
+            // return Ok(topic);
+            return Ok(topicResource);
+        }
 
         // [HttpPut("{id}")]
         // public IActionResult Update(int id, [FromBody]UpdateModel model)
