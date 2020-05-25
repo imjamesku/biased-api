@@ -66,6 +66,20 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                var comment = _commentService.Delete(id, int.Parse(User.Identity.Name));
+                return Ok(new {id = comment.Id});
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
+
         [AllowAnonymous]
         [HttpGet("{topicId}")]
         public IActionResult GetCommentsByTopicId(int topicId) {
