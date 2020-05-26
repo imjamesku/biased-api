@@ -11,5 +11,7 @@ namespace WebApi.Models.Topic
         public string Left { get; set; }
         [Required]
         public string Right { get; set; }
+        [Required]
+        public string Token {get; set;}
     }
 }

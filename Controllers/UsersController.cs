@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Entities;
 using WebApi.Models.Users;
+using System.Net;
+using System.Collections.Specialized;
+using System.Text.Json;
+using WebApi.Models.Recaptcha;
 
 namespace WebApi.Controllers
 {
@@ -78,9 +82,21 @@ namespace WebApi.Controllers
 
             try
             {
-                // create user
-                _userService.Create(user, model.Password);
-                return Ok();
+                using (var wb = new WebClient())
+                {
+                    var data = new NameValueCollection();
+                    data["secret"] = _appSettings.GoogleRecaptchaSecret;
+                    data["response"] = model.Token;
+
+                    var response = wb.UploadValues(_appSettings.GoogleRecaptchaVerifyUrl, "POST", data);
+                    var responseObj = JsonSerializer.Deserialize<RecaptchaResponseModel>(response);
+                    if (responseObj.success) {
+                        _userService.Create(user, model.Password);
+                        return Ok();
+                    }
+                    return BadRequest(new {message = "Recaptcha verification failed"});
+                }
+                
             }
             catch (AppException ex)
             {

@@ -6,6 +6,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Models.Topic;
+using System.Net;
+using System.Collections.Specialized;
+using System.Text;
+using WebApi.Models.Recaptcha;
+using System.Text.Json;
 
 namespace WebApi.Controllers
 {
@@ -33,17 +38,29 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody]CreateTopicModel model)
+        public IActionResult Create([FromBody] CreateTopicModel model)
         {
             try
             {
-                var topic = _topicService.Create(model, int.Parse(User.Identity.Name));
-                var topicResource = _mapper.Map<TopicResourceModel>(topic);
-                return Ok(topicResource);
+                using (var wb = new WebClient())
+                {
+                    var data = new NameValueCollection();
+                    data["secret"] = _appSettings.GoogleRecaptchaSecret;
+                    data["response"] = model.Token;
+
+                    var response = wb.UploadValues(_appSettings.GoogleRecaptchaVerifyUrl, "POST", data);
+                    var responseObj = JsonSerializer.Deserialize<RecaptchaResponseModel>(response);
+                    if (responseObj.success) {
+                        var topic = _topicService.Create(model, int.Parse(User.Identity.Name));
+                        var topicResource = _mapper.Map<TopicResourceModel>(topic);
+                        return Ok(topicResource);
+                    }
+                    return BadRequest(new {message = "Recaptcha verification failed"});
+                }
             }
             catch (AppException ex)
             {
-                return BadRequest(new {message = ex.Message});
+                return BadRequest(new { message = ex.Message });
             }
         }
 
