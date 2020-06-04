@@ -10,7 +10,7 @@ namespace WebApi.Services
 {
     public interface ITopicService
     {
-        IEnumerable<Topic> GetAll();
+        IEnumerable<Topic> GetAll(int offset);
         Topic GetById(int id);
         Topic Create(CreateTopicModel topicData, int userId);
         // void Update(Topic topic);
@@ -27,9 +27,9 @@ namespace WebApi.Services
         }
 
 
-        public IEnumerable<Topic> GetAll()
+        public IEnumerable<Topic> GetAll(int offset)
         {
-            var topics = _context.Topics.Include(t => t.Options).ThenInclude(o => o.Votes).OrderByDescending(t => t.CreatedAt);
+            var topics = _context.Topics.Include(t => t.Options).ThenInclude(o => o.Votes).OrderByDescending(t => t.CreatedAt).Skip(offset).Take(15);
             return topics;
         }
 

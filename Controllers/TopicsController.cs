@@ -66,11 +66,12 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] int offset)
         {
-            var topics = _topicService.GetAll();
+            var topics = _topicService.GetAll(offset);
             var topicResourceList = _mapper.Map<IList<TopicResourceModel>>(topics);
-            return Ok(topicResourceList);
+            return Ok(new {topicResourceList = topicResourceList,
+                            nextOffset = offset + topicResourceList.Count});
         }
 
         [AllowAnonymous]
