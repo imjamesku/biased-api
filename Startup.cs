@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace WebApi
 {
@@ -37,7 +38,12 @@ namespace WebApi
             // services.AddDbContext<DataContext, SqliteDataContext>();
 
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers(opt =>
+            {  // or AddMvc()
+               // remove formatter that turns nulls into 204 - No Content responses
+               // this formatter breaks Angular's Http response JSON parsing
+                opt.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+            });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // configure strongly typed settings objects
