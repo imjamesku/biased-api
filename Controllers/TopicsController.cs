@@ -20,21 +20,22 @@ namespace WebApi.Controllers
     public class TopicsController : ControllerBase
     {
         private ITopicService _topicService;
+        private ISecretService _secretService;
 
         // private readonly UserManager<IdentityUser> _userManager;
         private IMapper _mapper;
-        private readonly AppSettings _appSettings;
 
         public TopicsController(
             ITopicService topicService,
             // UserManager<IdentityUser> userManager,
+            ISecretService secretService,
             IMapper mapper,
             IOptions<AppSettings> appSettings)
         {
             _topicService = topicService;
+            _secretService = secretService;
             // _userManager = userManager;
             _mapper = mapper;
-            _appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -45,17 +46,18 @@ namespace WebApi.Controllers
                 using (var wb = new WebClient())
                 {
                     var data = new NameValueCollection();
-                    data["secret"] = _appSettings.GoogleRecaptchaSecret;
+                    data["secret"] = _secretService.GetSecret("recaptcha-secret");
                     data["response"] = model.Token;
 
-                    var response = wb.UploadValues(_appSettings.GoogleRecaptchaVerifyUrl, "POST", data);
+                    var response = wb.UploadValues(_secretService.GetSecret("recaptcha-verify-url"), "POST", data);
                     var responseObj = JsonSerializer.Deserialize<RecaptchaResponseModel>(response);
-                    if (responseObj.success) {
+                    if (responseObj.success)
+                    {
                         var topic = _topicService.Create(model, int.Parse(User.Identity.Name));
                         var topicResource = _mapper.Map<TopicResourceModel>(topic);
                         return Ok(topicResource);
                     }
-                    return BadRequest(new {message = "Recaptcha verification failed"});
+                    return BadRequest(new { message = "Recaptcha verification failed" });
                 }
             }
             catch (AppException ex)
@@ -70,8 +72,11 @@ namespace WebApi.Controllers
         {
             var topics = _topicService.GetAll(offset);
             var topicResourceList = _mapper.Map<IList<TopicResourceModel>>(topics);
-            return Ok(new {topicResourceList = topicResourceList,
-                            nextOffset = offset + topicResourceList.Count});
+            return Ok(new
+            {
+                topicResourceList = topicResourceList,
+                nextOffset = offset + topicResourceList.Count
+            });
         }
 
         [AllowAnonymous]

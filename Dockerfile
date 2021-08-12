@@ -14,5 +14,7 @@ RUN dotnet publish -c release -o /app --no-restore
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 COPY --from=build-env /app .
+# for local testing
+# COPY --from=build-env /source/imbiased-aa2ceed7f928.json .
 EXPOSE 80
 ENTRYPOINT ["dotnet", "WebApi.dll"]

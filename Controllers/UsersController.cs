@@ -28,23 +28,28 @@ namespace WebApi.Controllers
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
+        private ISecretService _secretService;
+
         public UsersController(
             IUserService userService,
             IMapper mapper,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            ISecretService secretService)
         {
             _userService = userService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _secretService = secretService;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
             var user = _userService.Authenticate(model.Username, model.Password);
 
-            if (user == null) {
+            if (user == null)
+            {
                 return BadRequest(new { message = "Username or password is incorrect" });
             }
 
@@ -75,7 +80,7 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]RegisterModel model)
+        public IActionResult Register([FromBody] RegisterModel model)
         {
             // map model to entity
             var user = _mapper.Map<User>(model);
@@ -85,18 +90,19 @@ namespace WebApi.Controllers
                 using (var wb = new WebClient())
                 {
                     var data = new NameValueCollection();
-                    data["secret"] = _appSettings.GoogleRecaptchaSecret;
+                    data["secret"] = _secretService.GetSecret("recaptcha-secret");
                     data["response"] = model.Token;
 
-                    var response = wb.UploadValues(_appSettings.GoogleRecaptchaVerifyUrl, "POST", data);
+                    var response = wb.UploadValues(_secretService.GetSecret("recaptcha-verify-url"), "POST", data);
                     var responseObj = JsonSerializer.Deserialize<RecaptchaResponseModel>(response);
-                    if (responseObj.success) {
+                    if (responseObj.success)
+                    {
                         _userService.Create(user, model.Password);
                         return Ok();
                     }
-                    return BadRequest(new {message = "Recaptcha verification failed"});
+                    return BadRequest(new { message = "Recaptcha verification failed" });
                 }
-                
+
             }
             catch (AppException ex)
             {
@@ -123,7 +129,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UpdateModel model)
+        public IActionResult Update(int id, [FromBody] UpdateModel model)
         {
             // map model to entity and set id
             var user = _mapper.Map<User>(model);
