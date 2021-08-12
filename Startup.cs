@@ -85,6 +85,7 @@ namespace WebApi
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IVoteService, VoteService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ISecretService, SecretService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
