@@ -98,6 +98,7 @@ namespace WebApi
 
             // global cors policy
             app.UseCors(x => x
+                .WithOrigins("https://biased.vercel.app")
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
