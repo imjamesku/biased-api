@@ -39,7 +39,7 @@ namespace WebApi
 
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("https://biased.vercel.app").AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("https://biased.vercel.app").AllowAnyMethod().WithHeaders("authorization", "accept", "content-type", "origin");
             }));
             services.AddControllers(opt =>
             {  // or AddMvc()
