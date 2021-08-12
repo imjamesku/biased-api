@@ -29,8 +29,7 @@ namespace WebApi.Controllers
             ITopicService topicService,
             // UserManager<IdentityUser> userManager,
             ISecretService secretService,
-            IMapper mapper,
-            IOptions<AppSettings> appSettings)
+            IMapper mapper)
         {
             _topicService = topicService;
             _secretService = secretService;
