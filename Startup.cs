@@ -37,7 +37,10 @@ namespace WebApi
             services.AddDbContext<DataContext, PostgresDataContext>();
             // services.AddDbContext<DataContext, SqliteDataContext>();
 
-            services.AddCors();
+            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+            {
+                builder.WithOrigins("https://biased.vercel.app").AllowAnyMethod().AllowAnyHeader();
+            }));
             services.AddControllers(opt =>
             {  // or AddMvc()
                // remove formatter that turns nulls into 204 - No Content responses
@@ -103,11 +106,12 @@ namespace WebApi
             app.UseRouting();
 
             // global cors policy
-            app.UseCors(x => x
-                .WithOrigins("https://biased.vercel.app")
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors("ApiCorsPolicy");
+            // app.UseCors(x => x
+            //     // .WithOrigins("https://biased.vercel.app")
+            //     .AllowAnyOrigin()
+            //     .AllowAnyMethod()
+            //     .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
